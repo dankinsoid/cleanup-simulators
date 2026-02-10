@@ -6,6 +6,7 @@ struct ContentView: View {
 
     var body: some View {
         SimulatorListView(viewModel: viewModel)
+        .background { VisualEffectBackground().ignoresSafeArea() }
         .navigationSubtitle(viewModel.subtitle)
         .toolbar {
             SimCleanToolbar(viewModel: viewModel)

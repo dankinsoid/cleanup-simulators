@@ -107,6 +107,7 @@ struct SimulatorListView: View {
                 .contextMenu(forSelectionType: String.self) { ids in
                     SimulatorContextMenu(ids: ids, viewModel: viewModel)
                 }
+                .scrollContentBackground(.hidden)
 
             }
         }

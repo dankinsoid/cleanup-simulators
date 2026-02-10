@@ -25,6 +25,12 @@ public enum Formatters {
 
     nonisolated(unsafe) private static let iso8601Formatter: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime]
+        return f
+    }()
+
+    nonisolated(unsafe) private static let iso8601FractionalFormatter: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
         f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         return f
     }()
@@ -32,5 +38,6 @@ public enum Formatters {
     public static func parseISO8601(_ string: String?) -> Date? {
         guard let string else { return nil }
         return iso8601Formatter.date(from: string)
+            ?? iso8601FractionalFormatter.date(from: string)
     }
 }
