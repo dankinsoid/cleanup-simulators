@@ -47,6 +47,7 @@ struct TipJarView: View {
         .padding(.vertical, 8)
         .animation(.default, value: viewModel.purchaseMessage)
         .task {
+            viewModel.listenForTransactions()
             await viewModel.loadProducts()
         }
     }
