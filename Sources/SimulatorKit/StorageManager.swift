@@ -12,8 +12,8 @@ public final class StorageManager: Sendable {
     public static let categories: [(id: String, name: String, path: String)] = [
         ("preview_simulators",  "Preview Simulators",   "~/Library/Developer/Xcode/UserData/Previews"),
         ("ib_support_xcode",    "IB Support",           "~/Library/Developer/Xcode/IB Support"),
-        ("ib_support_userdata", "IB Support (UserData)","~/Library/Developer/Xcode/UserData/IB Support"),
-        ("derived_data",        "DerivedData",          "~/Library/Developer/Xcode/DerivedData"),
+        ("ib_support_userdata", "IB Support (Old)","~/Library/Developer/Xcode/UserData/IB Support"),
+        // ("derived_data",        "DerivedData",          "~/Library/Developer/Xcode/DerivedData"),
         ("simulator_caches",    "Simulator Caches",     "~/Library/Developer/CoreSimulator/Caches"),
     ]
 

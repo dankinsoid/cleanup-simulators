@@ -53,6 +53,18 @@ final class SimulatorListViewModel {
         selectedItems.compactMap(\.storageCategory)
     }
 
+    var subtitle: String {
+        let items = listItems
+        let totalSize = items.reduce(0 as Int64) { $0 + $1.diskSize }
+        var text = "\(items.count) items — \(Formatters.byteCount(totalSize))"
+        if !selectedIDs.isEmpty {
+            let selected = selectedItems
+            let selectedSize = selected.reduce(0 as Int64) { $0 + $1.diskSize }
+            text += "  ·  \(selected.count) selected — \(Formatters.byteCount(selectedSize))"
+        }
+        return text
+    }
+
     // MARK: - Actions
 
     func refresh() async {

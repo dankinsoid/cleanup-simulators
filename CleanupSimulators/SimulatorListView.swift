@@ -108,19 +108,6 @@ struct SimulatorListView: View {
                     SimulatorContextMenu(ids: ids, viewModel: viewModel)
                 }
 
-                if !viewModel.selectedIDs.isEmpty {
-                    HStack {
-                        let items = viewModel.selectedItems
-                        let totalSize = items.reduce(0 as Int64) { $0 + $1.diskSize }
-                        Text("\(items.count) selected — \(Formatters.byteCount(totalSize))")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                        Spacer()
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                }
             }
         }
     }

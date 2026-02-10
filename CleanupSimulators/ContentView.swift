@@ -10,6 +10,7 @@ struct ContentView: View {
         } detail: {
             SimulatorListView(viewModel: viewModel)
         }
+        .navigationSubtitle(viewModel.subtitle)
         .toolbar {
             SimCleanToolbar(viewModel: viewModel)
         }
