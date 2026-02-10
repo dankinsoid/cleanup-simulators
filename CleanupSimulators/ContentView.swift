@@ -5,7 +5,11 @@ struct ContentView: View {
     @State private var viewModel = SimulatorListViewModel()
 
     var body: some View {
-        SimulatorListView(viewModel: viewModel)
+        VStack(spacing: 0) {
+            SimulatorListView(viewModel: viewModel)
+            Divider()
+            TipJarView()
+        }
         .background { VisualEffectBackground().ignoresSafeArea() }
         .navigationSubtitle(viewModel.subtitle)
         .toolbar {
