@@ -8,7 +8,7 @@ let package = Package(
     products: [
         .library(name: "SimulatorKit", targets: ["SimulatorKit"]),
         .executable(name: "simclean", targets: ["simclean"]),
-        .executable(name: "SimCleanApp", targets: ["SimCleanApp"]),
+        // SimCleanApp is now the Xcode project (CleanupSimulators)
         // TODO: MCP server
         // .executable(name: "SimCleanMCP", targets: ["SimCleanMCP"]),
     ],
@@ -28,10 +28,7 @@ let package = Package(
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
             ]
         ),
-        .executableTarget(
-            name: "SimCleanApp",
-            dependencies: ["SimulatorKit"]
-        ),
+        // SimCleanApp is now the Xcode project (CleanupSimulators)
         // TODO: MCP server
         // .executableTarget(
         //     name: "SimCleanMCP",

@@ -1,10 +1,3 @@
-//
-//  CleanupSimulatorsApp.swift
-//  CleanupSimulators
-//
-//  Created by Daniil Voidilov on 10.02.2026.
-//
-
 import SwiftUI
 
 @main
@@ -13,5 +6,6 @@ struct CleanupSimulatorsApp: App {
         WindowGroup {
             ContentView()
         }
+        .defaultSize(width: 900, height: 600)
     }
 }
