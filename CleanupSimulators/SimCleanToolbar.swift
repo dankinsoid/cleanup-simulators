@@ -3,39 +3,54 @@ import SwiftUI
 struct SimCleanToolbar: ToolbarContent {
     @Bindable var viewModel: SimulatorListViewModel
 
+    private var hasSelection: Bool {
+        !viewModel.selectedIDs.isEmpty
+    }
+
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .primaryAction) {
             Button {
                 Task { await viewModel.refresh() }
             } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.clockwise")
+                    Text("Refresh")
+                }
             }
             .help("Refresh simulator list")
 
             Button {
                 Task { await viewModel.deleteUnavailable() }
             } label: {
-                Label("Delete Unavailable", systemImage: "trash.circle")
+                HStack(spacing: 4) {
+                    Image(systemName: "trash.circle")
+                    Text("Delete Unavailable")
+                }
             }
             .help("Delete all unavailable simulators")
 
             Button {
                 viewModel.confirmAutoClean()
             } label: {
-                Label("Auto Clean", systemImage: "sparkles")
+                HStack(spacing: 4) {
+                    Image(systemName: "sparkles")
+                    Text("Auto Clean")
+                }
             }
             .help("Run full automatic cleanup")
-        }
 
-        ToolbarItem(placement: .destructiveAction) {
-            if !viewModel.selectedSimulatorIDs.isEmpty {
-                Button(role: .destructive) {
-                    viewModel.confirmDeleteSelected()
-                } label: {
-                    Label("Delete Selected", systemImage: "trash")
+            Button(role: .destructive) {
+                viewModel.confirmDeleteSelected()
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: "trash")
+                    Text("Delete")
                 }
-                .help("Delete \(viewModel.selectedSimulatorIDs.count) selected simulator(s)")
             }
+            .disabled(!hasSelection)
+            .help(hasSelection
+                ? "Delete \(viewModel.selectedIDs.count) selected simulator(s)"
+                : "Select simulators to delete")
         }
     }
 }

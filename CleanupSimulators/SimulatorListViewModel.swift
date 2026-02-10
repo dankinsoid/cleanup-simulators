@@ -9,32 +9,30 @@ final class SimulatorListViewModel {
     var storageCategories: [StorageCategory] = []
     var isLoading = false
     var errorMessage: String?
-    var selectedSimulatorIDs: Set<String> = []
-    var searchText = ""
+    var selectedIDs: Set<String> = []
     var filterRuntime: String?
 
     // Alerts
     var showDeleteConfirmation = false
     var showCloseXcodeAlert = false
     var showAutoCleanConfirmation = false
-    var showDeleteCategoryConfirmation = false
-    var pendingDeleteCategory: StorageCategory?
     var statusMessage: String?
 
     let simulatorManager = SimulatorManager()
     let storageManager = StorageManager()
 
+    // MARK: - Computed
+
+    var listItems: [ListItem] {
+        let sims: [ListItem] = filteredSimulators.map { .simulator($0) }
+        let cats: [ListItem] = storageCategories.filter { $0.diskSize > 0 }.map { .storage($0) }
+        return sims + cats
+    }
+
     var filteredSimulators: [Simulator] {
         var result = simulators
         if let filterRuntime, !filterRuntime.isEmpty {
             result = result.filter { $0.runtime == filterRuntime }
-        }
-        if !searchText.isEmpty {
-            result = result.filter {
-                $0.name.localizedCaseInsensitiveContains(searchText) ||
-                $0.id.localizedCaseInsensitiveContains(searchText) ||
-                $0.runtime.localizedCaseInsensitiveContains(searchText)
-            }
         }
         return result
     }
@@ -43,13 +41,19 @@ final class SimulatorListViewModel {
         Array(Set(simulators.map(\.runtime))).sorted()
     }
 
-    var totalDiskUsage: Int64 {
-        simulators.reduce(0) { $0 + $1.diskSize }
+    var selectedItems: [ListItem] {
+        listItems.filter { selectedIDs.contains($0.id) }
     }
 
     var selectedSimulators: [Simulator] {
-        simulators.filter { selectedSimulatorIDs.contains($0.id) }
+        selectedItems.compactMap(\.simulator)
     }
+
+    var selectedCategories: [StorageCategory] {
+        selectedItems.compactMap(\.storageCategory)
+    }
+
+    // MARK: - Actions
 
     func refresh() async {
         isLoading = true
@@ -88,7 +92,7 @@ final class SimulatorListViewModel {
     }
 
     func confirmDeleteSelected() {
-        guard !selectedSimulatorIDs.isEmpty else { return }
+        guard !selectedIDs.isEmpty else { return }
         if simulatorManager.isXcodeRunning() {
             showCloseXcodeAlert = true
         } else {
@@ -97,42 +101,28 @@ final class SimulatorListViewModel {
     }
 
     func deleteSelected(closeXcode: Bool = false) async {
-        let toDelete = selectedSimulators
-        await perform("Deleting \(toDelete.count) simulator(s)...") {
+        let sims = selectedSimulators
+        let cats = selectedCategories
+        let count = sims.count + cats.count
+        await perform("Deleting \(count) item(s)...") {
             if closeXcode {
                 try await self.simulatorManager.closeXcode()
                 try await Task.sleep(for: .seconds(2))
             }
-            try await self.simulatorManager.delete(toDelete)
+            if !sims.isEmpty {
+                try await self.simulatorManager.delete(sims)
+            }
+            for cat in cats {
+                try self.storageManager.deleteCategory(cat)
+            }
         }
-        selectedSimulatorIDs.removeAll()
+        selectedIDs.removeAll()
     }
 
     func deleteUnavailable() async {
         await perform("Deleting unavailable simulators...") {
             try await self.simulatorManager.deleteUnavailable()
         }
-    }
-
-    func confirmDeleteCategory(_ category: StorageCategory) {
-        pendingDeleteCategory = category
-        if simulatorManager.isXcodeRunning() {
-            showCloseXcodeAlert = true
-        } else {
-            showDeleteCategoryConfirmation = true
-        }
-    }
-
-    func deletePendingCategory(closeXcode: Bool = false) async {
-        guard let category = pendingDeleteCategory else { return }
-        await perform("Deleting '\(category.name)'...") {
-            if closeXcode {
-                try await self.simulatorManager.closeXcode()
-                try await Task.sleep(for: .seconds(2))
-            }
-            try self.storageManager.deleteCategory(category)
-        }
-        pendingDeleteCategory = nil
     }
 
     func confirmAutoClean() {

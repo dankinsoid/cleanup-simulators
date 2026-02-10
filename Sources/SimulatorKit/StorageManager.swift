@@ -38,7 +38,10 @@ public final class StorageManager: Sendable {
             for await category in group {
                 if let category { results.append(category) }
             }
-            return results.sorted { $0.diskSize > $1.diskSize }
+            let order = Self.categories.map(\.id)
+            return results.sorted { a, b in
+                (order.firstIndex(of: a.id) ?? 0) < (order.firstIndex(of: b.id) ?? 0)
+            }
         }
     }
 

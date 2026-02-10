@@ -44,27 +44,6 @@ struct SidebarView: View {
                 }
             }
 
-            Section("Storage") {
-                ForEach(viewModel.storageCategories) { category in
-                    StorageCategoryRow(category: category) {
-                        viewModel.confirmDeleteCategory(category)
-                    }
-                }
-
-                if !viewModel.storageCategories.isEmpty {
-                    HStack {
-                        Text("Total")
-                            .fontWeight(.semibold)
-                        Spacer()
-                        Text(Formatters.byteCount(
-                            viewModel.storageCategories.reduce(0) { $0 + $1.diskSize }
-                        ))
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.secondary)
-                    }
-                    .padding(.top, 4)
-                }
-            }
         }
         .listStyle(.sidebar)
     }

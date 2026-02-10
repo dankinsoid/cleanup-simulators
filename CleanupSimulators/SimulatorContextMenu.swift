@@ -5,16 +5,17 @@ struct SimulatorContextMenu: View {
     let ids: Set<String>
     @Bindable var viewModel: SimulatorListViewModel
 
-    private var simulators: [Simulator] {
-        viewModel.simulators.filter { ids.contains($0.id) }
+    private var items: [ListItem] {
+        viewModel.listItems.filter { ids.contains($0.id) }
     }
 
-    private var single: Simulator? {
-        simulators.count == 1 ? simulators.first : nil
+    private var singleSimulator: Simulator? {
+        guard items.count == 1 else { return nil }
+        return items.first?.simulator
     }
 
     var body: some View {
-        if let sim = single {
+        if let sim = singleSimulator {
             if sim.state == .shutdown {
                 Button("Boot") {
                     Task { await viewModel.boot(sim) }
@@ -33,8 +34,8 @@ struct SimulatorContextMenu: View {
             Divider()
         }
 
-        Button("Delete \(simulators.count > 1 ? "\(simulators.count) Simulators" : "Simulator")", role: .destructive) {
-            viewModel.selectedSimulatorIDs = ids
+        Button("Delete \(items.count > 1 ? "\(items.count) Items" : "")", role: .destructive) {
+            viewModel.selectedIDs = ids
             viewModel.confirmDeleteSelected()
         }
     }
