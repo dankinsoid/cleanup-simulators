@@ -16,8 +16,8 @@ struct SimulatorListView: View {
                     description: Text("No simulators found.")
                 )
             } else {
-                Table(viewModel.listItems, selection: $viewModel.selectedIDs) {
-                    TableColumn("Name") { item in
+                Table(viewModel.listItems, selection: $viewModel.selectedIDs, sortOrder: $viewModel.sortOrder) {
+                    TableColumn("Name", value: \.name) { item in
                         HStack(spacing: 6) {
                             switch item {
                             case .simulator(let sim):
@@ -34,14 +34,14 @@ struct SimulatorListView: View {
                     }
                     .width(min: 120, ideal: 180)
 
-                    TableColumn("Runtime") { item in
+                    TableColumn("Runtime", value: \.runtime) { item in
                         if let sim = item.simulator {
                             Text(sim.runtime)
                         }
                     }
                     .width(min: 80, ideal: 100)
 
-                    TableColumn("State") { item in
+                    TableColumn("State", value: \.stateRank) { item in
                         if let sim = item.simulator {
                             HStack(spacing: 6) {
                                 Text(sim.state == .booted ? "Booted" : "Shutdown")
@@ -69,7 +69,7 @@ struct SimulatorListView: View {
                     }
                     .width(min: 100, ideal: 130)
 
-                    TableColumn("Available") { item in
+                    TableColumn("Available", value: \.isAvailableRank) { item in
                         if let sim = item.simulator {
                             Image(systemName: sim.isAvailable ? "checkmark.circle.fill" : "xmark.circle")
                                 .foregroundStyle(sim.isAvailable ? .green : .red)
@@ -77,7 +77,7 @@ struct SimulatorListView: View {
                     }
                     .width(60)
 
-                    TableColumn("Size") { item in
+                    TableColumn("Size", value: \.diskSize) { item in
                         HStack(spacing: 4) {
                             Text(Formatters.byteCount(item.diskSize))
                                 .monospacedDigit()
@@ -96,7 +96,7 @@ struct SimulatorListView: View {
                     }
                     .width(min: 90, ideal: 110)
 
-                    TableColumn("Last Booted") { item in
+                    TableColumn("Last Booted", value: \.lastBootedAt) { item in
                         if let sim = item.simulator {
                             Text(Formatters.relativeDate(sim.lastBootedAt))
                                 .foregroundStyle(.secondary)

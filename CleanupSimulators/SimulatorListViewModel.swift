@@ -10,7 +10,9 @@ final class SimulatorListViewModel {
     var isLoading = false
     var errorMessage: String?
     var selectedIDs: Set<String> = []
-    var filterRuntime: String?
+    var sortOrder: [KeyPathComparator<ListItem>] = [
+        KeyPathComparator(\.name, order: .forward)
+    ]
 
     // Alerts
     var showDeleteConfirmation = false
@@ -24,21 +26,9 @@ final class SimulatorListViewModel {
     // MARK: - Computed
 
     var listItems: [ListItem] {
-        let sims: [ListItem] = filteredSimulators.map { .simulator($0) }
+        let sims: [ListItem] = simulators.map { .simulator($0) }
         let cats: [ListItem] = storageCategories.filter { $0.diskSize > 0 }.map { .storage($0) }
-        return sims + cats
-    }
-
-    var filteredSimulators: [Simulator] {
-        var result = simulators
-        if let filterRuntime, !filterRuntime.isEmpty {
-            result = result.filter { $0.runtime == filterRuntime }
-        }
-        return result
-    }
-
-    var runtimes: [String] {
-        Array(Set(simulators.map(\.runtime))).sorted()
+        return (sims + cats).sorted(using: sortOrder)
     }
 
     var selectedItems: [ListItem] {

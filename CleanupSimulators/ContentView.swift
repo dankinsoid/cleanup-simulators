@@ -5,11 +5,7 @@ struct ContentView: View {
     @State private var viewModel = SimulatorListViewModel()
 
     var body: some View {
-        NavigationSplitView {
-            SidebarView(viewModel: viewModel)
-        } detail: {
-            SimulatorListView(viewModel: viewModel)
-        }
+        SimulatorListView(viewModel: viewModel)
         .navigationSubtitle(viewModel.subtitle)
         .toolbar {
             SimCleanToolbar(viewModel: viewModel)
