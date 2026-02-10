@@ -43,11 +43,31 @@ struct SimulatorListView: View {
 
                     TableColumn("State") { item in
                         if let sim = item.simulator {
-                            Text(sim.state == .booted ? "Booted" : "Shutdown")
-                                .foregroundStyle(sim.state == .booted ? .green : .secondary)
+                            HStack(spacing: 6) {
+                                Text(sim.state == .booted ? "Booted" : "Shutdown")
+                                    .foregroundStyle(sim.state == .booted ? .green : .secondary)
+                                Spacer()
+                                if sim.state == .shutdown {
+                                    Button {
+                                        Task { await viewModel.launch(sim) }
+                                    } label: {
+                                        Image(systemName: "play.fill")
+                                    }
+                                    .buttonStyle(InlineButtonStyle(color: .blue))
+                                    .help("Run")
+                                } else {
+                                    Button {
+                                        Task { await viewModel.shutdown(sim) }
+                                    } label: {
+                                        Image(systemName: "stop.fill")
+                                    }
+                                    .buttonStyle(InlineButtonStyle(color: .orange))
+                                    .help("Shutdown")
+                                }
+                            }
                         }
                     }
-                    .width(min: 60, ideal: 80)
+                    .width(min: 100, ideal: 130)
 
                     TableColumn("Available") { item in
                         if let sim = item.simulator {
@@ -58,10 +78,23 @@ struct SimulatorListView: View {
                     .width(60)
 
                     TableColumn("Size") { item in
-                        Text(Formatters.byteCount(item.diskSize))
-                            .monospacedDigit()
+                        HStack(spacing: 4) {
+                            Text(Formatters.byteCount(item.diskSize))
+                                .monospacedDigit()
+                            Spacer()
+                            if item.diskSize > 0 {
+                                Button {
+                                    viewModel.selectedIDs = [item.id]
+                                    viewModel.confirmDeleteSelected()
+                                } label: {
+                                    Image(systemName: "trash")
+                                }
+                                .buttonStyle(InlineButtonStyle(color: .red))
+                                .help("Delete")
+                            }
+                        }
                     }
-                    .width(min: 70, ideal: 90)
+                    .width(min: 90, ideal: 110)
 
                     TableColumn("Last Booted") { item in
                         if let sim = item.simulator {
