@@ -39,13 +39,10 @@ public struct TBCCheckoutClient {
         clientSecret: String
     ) async throws -> (String, String?, Date?) {
         // DEBUG: print raw response
-        let data: Data = try await client("tpay", "access-token")
+        let token: TBCAccessToken = try await client("tpay", "access-token")
             .body(["client_Id": clientId, "client_secret": clientSecret])
             .bodyEncoder(.formURL)
-            .post
-            .call(.http, as: .identity)
-        print("🔑 Token response: \(String(data: data, encoding: .utf8) ?? "nil")")
-        let token = try JSONDecoder().decode(TBCAccessToken.self, from: data)
+            .post()
         return (token.accessToken, nil, Date(timeIntervalSinceNow: TimeInterval(token.expiresIn)))
     }
 
