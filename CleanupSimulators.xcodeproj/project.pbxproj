@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DA4C2F3B91A60026142F /* SimulatorKit */; };
-		83B0DA882F3BA49E0026142F /* Tips.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 83B0DA872F3BA49E0026142F /* Tips.storekit */; };
 		83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA92F3C24EE0026142F /* TBCCheckout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		83B0DA352F3B8D700026142F /* CleanupSimulators.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanupSimulators.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		83B0DA872F3BA49E0026142F /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; name = Tips.storekit; path = CleanupSimulators/Tips.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -41,7 +39,6 @@
 		83B0DA2C2F3B8D700026142F = {
 			isa = PBXGroup;
 			children = (
-				83B0DA872F3BA49E0026142F /* Tips.storekit */,
 				83B0DA372F3B8D700026142F /* CleanupSimulators */,
 				83B0DAA82F3C24EE0026142F /* Frameworks */,
 				83B0DA362F3B8D700026142F /* Products */,
@@ -132,7 +129,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83B0DA882F3BA49E0026142F /* Tips.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

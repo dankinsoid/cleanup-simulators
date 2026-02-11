@@ -10,12 +10,13 @@ final class TipJarViewModel {
     private var dismissTask: Task<Void, Never>?
     private var pollTask: Task<Void, Never>?
 
-    // TODO: Replace with real merchant credentials
-    private let client = TBCCheckoutClient(
-        apiKey: "<your-api-key>",
-        clientId: "<your-client-id>",
-        clientSecret: "<your-client-secret>"
-    )
+    private let client: TBCCheckoutClient? = {
+        let apiKey = Secrets.tbcApiKey
+        let appId = Secrets.tbcAppId
+        let secret = Secrets.tbcApiSecret
+        guard !apiKey.isEmpty, !appId.isEmpty, !secret.isEmpty else { return nil }
+        return TBCCheckoutClient(apiKey: apiKey, clientId: appId, clientSecret: secret)
+    }()
 
     struct Tip: Identifiable {
         let id: String
@@ -31,7 +32,13 @@ final class TipJarViewModel {
         Tip(id: "large", emoji: "🎉", label: "$10", amount: 10, color: "purple"),
     ]
 
+    var isConfigured: Bool { client != nil }
+
     func purchase(_ tip: Tip) async {
+        guard let client else {
+            showMessage("Failed, but thank you for trying!")
+            return
+        }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -71,6 +78,7 @@ final class TipJarViewModel {
             try? await Task.sleep(for: .seconds(2))
             guard !Task.isCancelled else { return }
             do {
+                guard let client else { return }
                 let payment = try await client.getPayment(payId)
                 switch payment.status {
                 case .succeeded:

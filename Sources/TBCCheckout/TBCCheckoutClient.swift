@@ -11,23 +11,42 @@ public struct TBCCheckoutClient {
         clientSecret: String,
         baseURL: URL = URL(string: "https://api.tbcbank.ge/v1")!
     ) {
+        let loggingComponents: LoggingComponents
+        #if DEBUG
+        loggingComponents = .full
+        #else
+        loggingComponents = []
+        #endif
         client = APIClient(baseURL: baseURL)
             .bodyEncoder(.json(dateEncodingStrategy: .iso8601))
             .bodyDecoder(.json(dateDecodingStrategy: .iso8601))
             .errorDecoder(.decodable(TBCError.self))
-            .header("apikey", apiKey)
-            .tokenRefresher { _, client, _ in
-                let token: TBCAccessToken = try await client("tpay", "access-token")
-                    .body([
-                        "client_Id": clientId,
-                        "client_secret": clientSecret,
-                    ])
-                    .bodyEncoder(.formURL)
-                    .post()
-                return (token.accessToken, nil, Date(timeIntervalSinceNow: TimeInterval(token.expiresIn)))
+            .loggingComponents(loggingComponents)
+            .header(.apikey, apiKey)
+            .logMaskedHeaders([.apikey])
+            .tokenRefresher { client, _ in
+                try await Self.fetchToken(client: client, clientId: clientId, clientSecret: clientSecret)
+            } refresh: { _, client, _ in
+                try await Self.fetchToken(client: client, clientId: clientId, clientSecret: clientSecret)
             } auth: {
                 .bearer(token: $0)
             }
+    }
+
+    private static func fetchToken(
+        client: APIClient,
+        clientId: String,
+        clientSecret: String
+    ) async throws -> (String, String?, Date?) {
+        // DEBUG: print raw response
+        let data: Data = try await client("tpay", "access-token")
+            .body(["client_Id": clientId, "client_secret": clientSecret])
+            .bodyEncoder(.formURL)
+            .post
+            .call(.http, as: .identity)
+        print("🔑 Token response: \(String(data: data, encoding: .utf8) ?? "nil")")
+        let token = try JSONDecoder().decode(TBCAccessToken.self, from: data)
+        return (token.accessToken, nil, Date(timeIntervalSinceNow: TimeInterval(token.expiresIn)))
     }
 
     // MARK: - Payments
@@ -73,4 +92,9 @@ public struct TBCCheckoutClient {
         try await client("tpay", "payments", recId, "delete")
             .post()
     }
+}
+
+extension HTTPField.Name {
+    
+    static let apikey = HTTPField.Name("apikey")!
 }
