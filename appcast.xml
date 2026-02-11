@@ -1,9 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
     <channel>
         <title>CleanupSimulators</title>
         <link>https://github.com/dankinsoid/cleanup-simulators</link>
         <description>CleanupSimulators updates</description>
         <language>en</language>
+        <item>
+            <title>0.0.1</title>
+            <pubDate>Wed, 11 Feb 2026 08:19:25 +0000</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>0.0.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/dankinsoid/cleanup-simulators/releases/download/v0.0.1/CleanupSimulators.dmg" length="1334629" type="application/octet-stream" sparkle:edSignature="USkyhBcqxvmkJU2zmsT0hOrXEAugMybqBQwc6pXhJ/C/sA6q0Zpdpo4eTDE+C0/7HzA/vIVR9aYQj71LK9AaDA=="/>
+        </item>
     </channel>
 </rss>
