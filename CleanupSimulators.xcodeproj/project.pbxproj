@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DA4C2F3B91A60026142F /* SimulatorKit */; };
+		83B0DAA62F3D00010026142F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA52F3D00010026142F /* Sparkle */; };
 		83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA92F3C24EE0026142F /* TBCCheckout */; };
 /* End PBXBuildFile section */
 
@@ -15,9 +16,22 @@
 		83B0DA352F3B8D700026142F /* CleanupSimulators.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanupSimulators.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		83B0DAA72F3D00010026142F /* Exceptions for "CleanupSimulators" folder in "CleanupSimulators" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 83B0DA342F3B8D700026142F /* CleanupSimulators */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		83B0DA372F3B8D700026142F /* CleanupSimulators */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				83B0DAA72F3D00010026142F /* Exceptions for "CleanupSimulators" folder in "CleanupSimulators" target */,
+			);
 			path = CleanupSimulators;
 			sourceTree = "<group>";
 		};
@@ -28,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83B0DAA62F3D00010026142F /* Sparkle in Frameworks */,
 				83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */,
 				83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */,
 			);
@@ -81,6 +96,7 @@
 			name = CleanupSimulators;
 			packageProductDependencies = (
 				83B0DA4C2F3B91A60026142F /* SimulatorKit */,
+				83B0DAA52F3D00010026142F /* Sparkle */,
 				83B0DAA92F3C24EE0026142F /* TBCCheckout */,
 			);
 			productName = CleanupSimulators;
@@ -113,6 +129,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */,
+				83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83B0DA362F3B8D700026142F /* Products */;
@@ -278,6 +295,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CleanupSimulators/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -307,6 +325,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CleanupSimulators/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -353,10 +372,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		83B0DA4C2F3B91A60026142F /* SimulatorKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SimulatorKit;
+		};
+		83B0DAA52F3D00010026142F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 		83B0DAA92F3C24EE0026142F /* TBCCheckout */ = {
 			isa = XCSwiftPackageProductDependency;
