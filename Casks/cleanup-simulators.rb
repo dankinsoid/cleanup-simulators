@@ -1,6 +1,6 @@
 cask "cleanup-simulators" do
-  version "1.0.0"
-  sha256 "0e2fe11f9e39aea44cf4a7005fd3189f3062fb65876908403c876d6b4e2eaa7c"
+  version "1.0.1"
+  sha256 "cd6b1807472d32940c3b06e4c27dcc5c2ca93eeb08cf72a607f7845d64190a12"
 
   url "https://github.com/dankinsoid/cleanup-simulators/releases/download/v#{version}/CleanupSimulators.dmg"
   name "CleanupSimulators"
