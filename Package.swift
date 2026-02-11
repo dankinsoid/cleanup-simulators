@@ -14,7 +14,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
-        .package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.73.0"),
         // TODO: MCP server
         // .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.10.0"),
     ],

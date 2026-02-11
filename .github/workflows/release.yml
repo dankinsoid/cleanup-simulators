@@ -159,6 +159,10 @@ jobs:
           VERSION="${{ steps.version.outputs.version }}"
           REPO="dankinsoid/cleanup-simulators"
 
+          # Write EdDSA private key to temp file for generate_appcast
+          KEY_FILE="$RUNNER_TEMP/sparkle_key"
+          echo -n "$SPARKLE_EDDSA_PRIVATE_KEY" > "$KEY_FILE"
+
           mkdir -p appcast-staging
           cp "$DMG_PATH" appcast-staging/
 
@@ -167,9 +171,11 @@ jobs:
           fi
 
           sparkle-tools/bin/generate_appcast appcast-staging \
+            --ed-key-file "$KEY_FILE" \
             --download-url-prefix "https://github.com/$REPO/releases/download/v$VERSION/"
 
           cp appcast-staging/appcast.xml appcast.xml
+          rm -f "$KEY_FILE"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
