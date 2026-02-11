@@ -7,7 +7,6 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .library(name: "SimulatorKit", targets: ["SimulatorKit"]),
-        .library(name: "TBCCheckout", targets: ["TBCCheckout"]),
         .executable(name: "simclean", targets: ["simclean"]),
         // SimCleanApp is now the Xcode project (CleanupSimulators)
         // TODO: MCP server
@@ -22,12 +21,6 @@ let package = Package(
     targets: [
         .target(
             name: "SimulatorKit"
-        ),
-        .target(
-            name: "TBCCheckout",
-            dependencies: [
-                .product(name: "SwiftAPIClient", package: "swift-api-client"),
-            ]
         ),
         .executableTarget(
             name: "simclean",

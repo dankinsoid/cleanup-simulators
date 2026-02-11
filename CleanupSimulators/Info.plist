@@ -6,5 +6,7 @@
 	<string>https://raw.githubusercontent.com/dankinsoid/cleanup-simulators/main/appcast.xml</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
+	<key>SUPublicEDKey</key>
+	<string>eIttwLT+WB4VOb07JR10d1qXMfZnSUL7ilmiiVk4sVU=</string>
 </dict>
 </plist>

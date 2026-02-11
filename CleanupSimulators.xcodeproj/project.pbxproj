@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		8360D8042F3C5463001B279D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8360D8032F3C5463001B279D /* Sparkle */; };
 		83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DA4C2F3B91A60026142F /* SimulatorKit */; };
-		83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA92F3C24EE0026142F /* TBCCheckout */; };
+		83E717752F3C6939002263C8 /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83E717742F3C6939002263C8 /* SimulatorKit */; };
+		83E717782F3C695A002263C8 /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83E717772F3C695A002263C8 /* SimulatorKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,8 +43,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83E717782F3C695A002263C8 /* SimulatorKit in Frameworks */,
 				8360D8042F3C5463001B279D /* Sparkle in Frameworks */,
-				83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */,
+				83E717752F3C6939002263C8 /* SimulatorKit in Frameworks */,
 				83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -96,8 +98,9 @@
 			name = CleanupSimulators;
 			packageProductDependencies = (
 				83B0DA4C2F3B91A60026142F /* SimulatorKit */,
-				83B0DAA92F3C24EE0026142F /* TBCCheckout */,
 				8360D8032F3C5463001B279D /* Sparkle */,
+				83E717742F3C6939002263C8 /* SimulatorKit */,
+				83E717772F3C695A002263C8 /* SimulatorKit */,
 			);
 			productName = CleanupSimulators;
 			productReference = 83B0DA352F3B8D700026142F /* CleanupSimulators.app */;
@@ -128,8 +131,8 @@
 			mainGroup = 83B0DA2C2F3B8D700026142F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */,
 				8360D8022F3C5463001B279D /* XCRemoteSwiftPackageReference "Sparkle" */,
+				83E717762F3C695A002263C8 /* XCLocalSwiftPackageReference "../cleanup-simulators" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83B0DA362F3B8D700026142F /* Products */;
@@ -366,7 +369,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */ = {
+		83E717762F3C695A002263C8 /* XCLocalSwiftPackageReference "../cleanup-simulators" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../cleanup-simulators";
 		};
@@ -393,10 +396,14 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SimulatorKit;
 		};
-		83B0DAA92F3C24EE0026142F /* TBCCheckout */ = {
+		83E717742F3C6939002263C8 /* SimulatorKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */;
-			productName = TBCCheckout;
+			package = 8360D8022F3C5463001B279D /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = SimulatorKit;
+		};
+		83E717772F3C695A002263C8 /* SimulatorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SimulatorKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
