@@ -1,5 +1,4 @@
 import SwiftUI
-import StoreKit
 
 struct TipJarView: View {
     @State private var viewModel = TipJarViewModel()
@@ -13,20 +12,19 @@ struct TipJarView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
-            if viewModel.isLoading {
-                ProgressView()
-                    .controlSize(.small)
-            } else {
-                HStack(spacing: 8) {
-                    ForEach(viewModel.products) { product in
-                        TipButton(product: product) {
-                            Task { await viewModel.purchase(product) }
-                        }
+            HStack(spacing: 8) {
+                ForEach(viewModel.tips) { tip in
+                    TipButton(tip: tip) {
+                        Task { await viewModel.purchase(tip) }
                     }
+                    .disabled(viewModel.isLoading)
                 }
             }
 
-            if let message = viewModel.purchaseMessage {
+            if viewModel.isLoading {
+                ProgressView()
+                    .controlSize(.small)
+            } else if let message = viewModel.purchaseMessage {
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.green)
@@ -46,32 +44,30 @@ struct TipJarView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .animation(.default, value: viewModel.purchaseMessage)
-        .task {
-            viewModel.listenForTransactions()
-            await viewModel.loadProducts()
+        .sheet(isPresented: Binding(
+            get: { viewModel.paymentURL != nil },
+            set: { if !$0 { viewModel.onPaymentDismissed() } }
+        )) {
+            if let url = viewModel.paymentURL {
+                PaymentWebView(url: url) {
+                    viewModel.onPaymentReturn()
+                }
+                .frame(minWidth: 480, minHeight: 600)
+            }
         }
     }
 }
 
 private struct TipButton: View {
-    let product: Product
+    let tip: TipJarViewModel.Tip
     let action: () -> Void
     @State private var isHovered = false
 
-    private var emoji: String {
-        switch product.id {
-        case "tip.small": "☕️"
-        case "tip.medium": "🍕"
-        case "tip.large": "🎉"
-        default: "💝"
-        }
-    }
-
     private var color: Color {
-        switch product.id {
-        case "tip.small": .orange
-        case "tip.medium": .pink
-        case "tip.large": .purple
+        switch tip.color {
+        case "orange": .orange
+        case "pink": .pink
+        case "purple": .purple
         default: .blue
         }
     }
@@ -79,8 +75,8 @@ private struct TipButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 4) {
-                Text(emoji)
-                Text(product.displayPrice)
+                Text(tip.emoji)
+                Text(tip.label)
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
             }
             .padding(.horizontal, 10)

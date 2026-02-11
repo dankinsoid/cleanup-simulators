@@ -7,6 +7,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     products: [
         .library(name: "SimulatorKit", targets: ["SimulatorKit"]),
+        .library(name: "TBCCheckout", targets: ["TBCCheckout"]),
         .executable(name: "simclean", targets: ["simclean"]),
         // SimCleanApp is now the Xcode project (CleanupSimulators)
         // TODO: MCP server
@@ -14,12 +15,19 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.5.0"),
+        .package(url: "https://github.com/dankinsoid/swift-api-client.git", from: "1.73.0"),
         // TODO: MCP server
         // .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.10.0"),
     ],
     targets: [
         .target(
             name: "SimulatorKit"
+        ),
+        .target(
+            name: "TBCCheckout",
+            dependencies: [
+                .product(name: "SwiftAPIClient", package: "swift-api-client"),
+            ]
         ),
         .executableTarget(
             name: "simclean",

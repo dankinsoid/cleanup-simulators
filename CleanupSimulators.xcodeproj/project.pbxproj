@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DA4C2F3B91A60026142F /* SimulatorKit */; };
 		83B0DA882F3BA49E0026142F /* Tips.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 83B0DA872F3BA49E0026142F /* Tips.storekit */; };
+		83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA92F3C24EE0026142F /* TBCCheckout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */,
 				83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -41,6 +43,7 @@
 			children = (
 				83B0DA872F3BA49E0026142F /* Tips.storekit */,
 				83B0DA372F3B8D700026142F /* CleanupSimulators */,
+				83B0DAA82F3C24EE0026142F /* Frameworks */,
 				83B0DA362F3B8D700026142F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +54,13 @@
 				83B0DA352F3B8D700026142F /* CleanupSimulators.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		83B0DAA82F3C24EE0026142F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,6 +84,7 @@
 			name = CleanupSimulators;
 			packageProductDependencies = (
 				83B0DA4C2F3B91A60026142F /* SimulatorKit */,
+				83B0DAA92F3C24EE0026142F /* TBCCheckout */,
 			);
 			productName = CleanupSimulators;
 			productReference = 83B0DA352F3B8D700026142F /* CleanupSimulators.app */;
@@ -350,6 +361,11 @@
 		83B0DA4C2F3B91A60026142F /* SimulatorKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SimulatorKit;
+		};
+		83B0DAA92F3C24EE0026142F /* TBCCheckout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */;
+			productName = TBCCheckout;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

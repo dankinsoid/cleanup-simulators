@@ -1,67 +1,92 @@
-import StoreKit
+import Foundation
+import TBCCheckout
 
 @MainActor @Observable
 final class TipJarViewModel {
-    private(set) var products: [Product] = []
     private(set) var isLoading = false
     private(set) var purchaseMessage: String?
+    private(set) var paymentURL: URL?
+    private var currentPayId: String?
     private var dismissTask: Task<Void, Never>?
+    private var pollTask: Task<Void, Never>?
 
-    private static let productIDs = [
-        "tip.small",
-        "tip.medium",
-        "tip.large",
+    // TODO: Replace with real merchant credentials
+    private let client = TBCCheckoutClient(
+        apiKey: "<your-api-key>",
+        clientId: "<your-client-id>",
+        clientSecret: "<your-client-secret>"
+    )
+
+    struct Tip: Identifiable {
+        let id: String
+        let emoji: String
+        let label: String
+        let amount: Decimal
+        let color: String
+    }
+
+    let tips: [Tip] = [
+        Tip(id: "small", emoji: "☕️", label: "$1", amount: 1, color: "orange"),
+        Tip(id: "medium", emoji: "🍕", label: "$5", amount: 5, color: "pink"),
+        Tip(id: "large", emoji: "🎉", label: "$10", amount: 10, color: "purple"),
     ]
 
-    private var transactionsTask: Task<Void, Never>?
-
-    func loadProducts() async {
-        guard products.isEmpty else { return }
+    func purchase(_ tip: Tip) async {
         isLoading = true
         defer { isLoading = false }
         do {
-            products = try await Product.products(for: Self.productIDs)
-                .sorted { $0.price < $1.price }
+            let payment = try await client.createPayment(
+                TBCCreatePayment(
+                    amount: Amount(currency: .usd, total: tip.amount),
+                    returnURL: PaymentWebView.returnURL,
+                    language: .en,
+                    merchantPaymentId: "tip-\(tip.id)-\(UUID().uuidString.prefix(8))",
+                    description: "Tip: \(tip.label)"
+                )
+            )
+            currentPayId = payment.payId
+            paymentURL = payment.approvalURL
         } catch {
-            // Products unavailable
+            showMessage("Failed, but thank you for trying!")
         }
     }
 
-    func listenForTransactions() {
-        guard transactionsTask == nil else { return }
-        transactionsTask = Task.detached(priority: .background) {
-            for await result in Transaction.updates {
-                switch result {
-                case .verified(let transaction):
-                    await transaction.finish()
-                    await MainActor.run {
-                        self.showMessage("Thank you!")
-                    }
-                case .unverified(let transaction, _):
-                    await transaction.finish()
+    func onPaymentReturn() {
+        paymentURL = nil
+        guard let payId = currentPayId else { return }
+        pollTask?.cancel()
+        pollTask = Task {
+            await checkPaymentStatus(payId)
+        }
+    }
+
+    func onPaymentDismissed() {
+        paymentURL = nil
+        pollTask?.cancel()
+        currentPayId = nil
+    }
+
+    private func checkPaymentStatus(_ payId: String) async {
+        for _ in 0..<10 {
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
+            do {
+                let payment = try await client.getPayment(payId)
+                switch payment.status {
+                case .succeeded:
+                    showMessage("Thank you!")
+                    return
+                case .failed, .expired:
+                    showMessage("Failed, but thank you for trying!")
+                    return
+                default:
+                    continue
                 }
+            } catch {
+                continue
             }
         }
-    }
-
-    func purchase(_ product: Product) async {
-        do {
-            let result = try await product.purchase()
-            switch result {
-            case .success(let verification):
-                let transaction = try checkVerified(verification)
-                await transaction.finish()
-                showMessage("Thank you!")
-            case .userCancelled:
-                break
-            case .pending:
-                showMessage("Purchase pending...")
-            @unknown default:
-                break
-            }
-        } catch {
-            showMessage("Purchase failed")
-        }
+        showMessage("Thank you for trying!")
     }
 
     private func showMessage(_ message: String) {
@@ -73,18 +98,5 @@ final class TipJarViewModel {
                 purchaseMessage = nil
             }
         }
-    }
-
-    private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        switch result {
-        case .unverified:
-            throw StoreError.failedVerification
-        case .verified(let safe):
-            return safe
-        }
-    }
-
-    private enum StoreError: Error {
-        case failedVerification
     }
 }
