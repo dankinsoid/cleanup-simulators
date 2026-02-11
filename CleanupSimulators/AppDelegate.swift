@@ -12,8 +12,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, SPUUpdaterDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         do {
             try updaterController.updater.start()
-        } catch {
-            print("Failed to start updater: \(error)")
+        } catch {}
+
+        if let window = NSApplication.shared.windows.first {
+            window.setFrameAutosaveName("MainWindow")
         }
     }
 }

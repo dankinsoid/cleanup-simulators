@@ -20,13 +20,15 @@ struct SimulatorListView: View {
                     TableColumn("Name", value: \.name) { item in
                         HStack(spacing: 6) {
                             switch item {
-                            case .simulator(let sim):
-                                StateBadge(state: sim.state)
-                                Text(sim.name)
+                            case .simulator:
+                                Image(systemName: "iphone")
+                                    .foregroundStyle(.secondary)
+                                    .frame(width: 14, alignment: .center)
+                                Text(item.name)
                             case .storage(let cat):
-                                Image(systemName: "folder.fill")
-                                    .foregroundStyle(.orange)
-                                    .font(.caption)
+                                Image(systemName: cat.id == "derived_data" ? "hammer.fill" : "internaldrive.fill")
+                                    .foregroundStyle(cat.id == "derived_data" ? .blue : .orange)
+                                    .frame(width: 14, alignment: .center)
                                 Text(cat.name)
                                     .foregroundStyle(.secondary)
                             }
@@ -79,8 +81,13 @@ struct SimulatorListView: View {
 
                     TableColumn("Size", value: \.diskSize) { item in
                         HStack(spacing: 4) {
-                            Text(Formatters.byteCount(item.diskSize))
-                                .monospacedDigit()
+                            if item.isCalculating {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Text(Formatters.byteCount(item.diskSize))
+                                    .monospacedDigit()
+                            }
                             Spacer()
                             if item.diskSize > 0 {
                                 Button {
@@ -93,6 +100,7 @@ struct SimulatorListView: View {
                                 .help("Delete")
                             }
                         }
+                        .frame(height: 20)
                     }
                     .width(min: 90, ideal: 110)
 
@@ -103,6 +111,15 @@ struct SimulatorListView: View {
                         }
                     }
                     .width(min: 100, ideal: 140)
+
+                    TableColumn("After Deletion", value: \.consequence) { item in
+                        if !item.consequence.isEmpty {
+                            Text(item.consequence)
+                                .foregroundStyle(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    .width(min: 180, ideal: 280)
                 }
                 .contextMenu(forSelectionType: String.self) { ids in
                     SimulatorContextMenu(ids: ids, viewModel: viewModel)

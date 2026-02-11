@@ -27,8 +27,15 @@ final class SimulatorListViewModel {
 
     var listItems: [ListItem] {
         let sims: [ListItem] = simulators.map { .simulator($0) }
-        let cats: [ListItem] = storageCategories.filter { $0.diskSize > 0 }.map { .storage($0) }
-        return (sims + cats).sorted(using: sortOrder)
+        let cats: [ListItem] = storageCategories.map { .storage($0) }
+        let all = sims + cats
+        let isSortedByName = sortOrder.first?.keyPath == \ListItem.name
+        if isSortedByName {
+            let order = sortOrder.first?.order ?? .forward
+            let groupSort = KeyPathComparator(\ListItem.sortGroup, order: order)
+            return all.sorted(using: [groupSort] + sortOrder)
+        }
+        return all.sorted(using: sortOrder)
     }
 
     var selectedItems: [ListItem] {
@@ -62,11 +69,40 @@ final class SimulatorListViewModel {
         errorMessage = nil
         do {
             simulators = try await simulatorManager.listSimulators()
-            storageCategories = await storageManager.calculateAll()
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+
+        // Show existing categories immediately with loading state
+        let fm = FileManager.default
+        storageCategories = StorageManager.categories.compactMap { cat in
+            let path = NSString(string: cat.path).expandingTildeInPath as String
+            guard fm.fileExists(atPath: path) else { return nil }
+            return StorageCategory(
+                id: cat.id,
+                name: cat.name,
+                path: path,
+                diskSize: 0,
+                consequence: cat.consequence,
+                isCalculating: true
+            )
+        }
+
+        // Calculate each category size independently
+        for cat in storageCategories {
+            let manager = storageManager
+            let size = await Task.detached { manager.directorySize(at: cat.path) }.value
+            if let idx = storageCategories.firstIndex(where: { $0.id == cat.id }) {
+                storageCategories[idx] = StorageCategory(
+                    id: cat.id,
+                    name: cat.name,
+                    path: cat.path,
+                    diskSize: size,
+                    consequence: cat.consequence
+                )
+            }
+        }
     }
 
     func boot(_ simulator: Simulator) async {

@@ -8,13 +8,19 @@ public struct CleanupResult: Sendable {
 }
 
 public final class StorageManager: Sendable {
-
-    public static let categories: [(id: String, name: String, path: String)] = [
-        ("preview_simulators",  "Preview Simulators",   "~/Library/Developer/Xcode/UserData/Previews"),
-        ("ib_support_xcode",    "IB Support",           "~/Library/Developer/Xcode/IB Support"),
-        ("ib_support_userdata", "IB Support (Old)","~/Library/Developer/Xcode/UserData/IB Support"),
-        // ("derived_data",        "DerivedData",          "~/Library/Developer/Xcode/DerivedData"),
-        ("simulator_caches",    "Simulator Caches",     "~/Library/Developer/CoreSimulator/Caches"),
+    public static let categories: [(id: String, name: String, path: String, consequence: String)] = [
+        ("preview_simulators", "Preview Simulators", "~/Library/Developer/Xcode/UserData/Previews",
+         "Restart Xcode and delete DerivedData, or Preview may hang"),
+        ("ib_support_xcode", "IB Support", "~/Library/Developer/Xcode/IB Support",
+         "Xcode will regenerate on next Interface Builder use"),
+        ("ib_support_userdata", "IB Support (Old)", "~/Library/Developer/Xcode/UserData/IB Support",
+         "Safe to remove, no longer used by modern Xcode"),
+        ("simulator_caches", "Simulator Caches", "~/Library/Developer/CoreSimulator/Caches",
+         "Xcode will rebuild caches, first simulator boot slower"),
+        ("device_support", "iOS DeviceSupport", "~/Library/Developer/Xcode/iOS DeviceSupport",
+         "Xcode will re-download symbols on next device connection"),
+        ("derived_data", "DerivedData", "~/Library/Developer/Xcode/DerivedData",
+         "All projects will require a full rebuild")
     ]
 
     public init() {}
@@ -30,7 +36,8 @@ public final class StorageManager: Sendable {
                         id: cat.id,
                         name: cat.name,
                         path: expandedPath,
-                        diskSize: size
+                        diskSize: size,
+                        consequence: cat.consequence
                     )
                 }
             }

@@ -12,7 +12,7 @@ struct CleanupSimulatorsApp: App {
                     NSApplication.shared.terminate(nil)
                 }
         }
-        .defaultSize(width: 900, height: 600)
+        .defaultSize(width: 1100, height: 600)
         .commands {
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: appDelegate.updaterController.updater)

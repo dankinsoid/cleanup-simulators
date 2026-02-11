@@ -55,6 +55,21 @@ enum ListItem: Identifiable {
         return nil
     }
 
+    var isCalculating: Bool {
+        storageCategory?.isCalculating ?? false
+    }
+
+    var sortGroup: Int {
+        switch self {
+        case .simulator: 0
+        case .storage: 1
+        }
+    }
+
+    var consequence: String {
+        storageCategory?.consequence ?? ""
+    }
+
     var storageCategory: StorageCategory? {
         if case .storage(let c) = self { return c }
         return nil
