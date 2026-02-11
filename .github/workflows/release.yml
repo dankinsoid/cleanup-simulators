@@ -177,6 +177,28 @@ jobs:
           cp appcast-staging/appcast.xml appcast.xml
           rm -f "$KEY_FILE"
 
+      - name: Update Homebrew Cask
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          SHA256=$(shasum -a 256 "$DMG_PATH" | awk '{ print $1 }')
+
+          mkdir -p Casks
+          cat > Casks/cleanup-simulators.rb << EOF
+          cask "cleanup-simulators" do
+            version "$VERSION"
+            sha256 "$SHA256"
+
+            url "https://github.com/dankinsoid/cleanup-simulators/releases/download/v#{version}/CleanupSimulators.dmg"
+            name "CleanupSimulators"
+            desc "Clean up Xcode simulators"
+            homepage "https://github.com/dankinsoid/cleanup-simulators"
+
+            depends_on macos: ">= :sonoma"
+
+            app "CleanupSimulators.app"
+          end
+          EOF
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -188,15 +210,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit appcast.xml
+      - name: Commit appcast.xml and Cask
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git checkout main
-          git add appcast.xml
-          git diff --cached --quiet && echo "No appcast changes" && exit 0
-          git commit -m "Update appcast.xml for v${{ steps.version.outputs.version }}"
+          git add appcast.xml Casks/cleanup-simulators.rb
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update appcast and cask for v${{ steps.version.outputs.version }}"
           git push origin main
 
       - name: Clean up keychain
