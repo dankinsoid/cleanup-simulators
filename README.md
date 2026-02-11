@@ -2,6 +2,8 @@
 
 A macOS app and CLI tool for managing Xcode simulators and reclaiming disk space.
 
+![Cleanup Simulators](Assets/screenshot.png)
+
 - Delete unavailable/orphaned simulators
 - Clear Preview Simulators, IB Support, and Simulator Caches
 - Boot, shutdown, reboot, and launch simulators
