@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8360D8042F3C5463001B279D /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 8360D8032F3C5463001B279D /* Sparkle */; };
 		83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DA4C2F3B91A60026142F /* SimulatorKit */; };
-		83B0DAA62F3D00010026142F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA52F3D00010026142F /* Sparkle */; };
 		83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */ = {isa = PBXBuildFile; productRef = 83B0DAA92F3C24EE0026142F /* TBCCheckout */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83B0DAA62F3D00010026142F /* Sparkle in Frameworks */,
+				8360D8042F3C5463001B279D /* Sparkle in Frameworks */,
 				83B0DAAA2F3C24EE0026142F /* TBCCheckout in Frameworks */,
 				83B0DA4D2F3B91A60026142F /* SimulatorKit in Frameworks */,
 			);
@@ -96,8 +96,8 @@
 			name = CleanupSimulators;
 			packageProductDependencies = (
 				83B0DA4C2F3B91A60026142F /* SimulatorKit */,
-				83B0DAA52F3D00010026142F /* Sparkle */,
 				83B0DAA92F3C24EE0026142F /* TBCCheckout */,
+				8360D8032F3C5463001B279D /* Sparkle */,
 			);
 			productName = CleanupSimulators;
 			productReference = 83B0DA352F3B8D700026142F /* CleanupSimulators.app */;
@@ -129,7 +129,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				83B0DA4B2F3B91A60026142F /* XCLocalSwiftPackageReference "../cleanup-simulators" */,
-				83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */,
+				8360D8022F3C5463001B279D /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 83B0DA362F3B8D700026142F /* Products */;
@@ -373,25 +373,25 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+		8360D8022F3C5463001B279D /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.7.0;
+				minimumVersion = 2.8.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8360D8032F3C5463001B279D /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8360D8022F3C5463001B279D /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
 		83B0DA4C2F3B91A60026142F /* SimulatorKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SimulatorKit;
-		};
-		83B0DAA52F3D00010026142F /* Sparkle */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 83B0DAA42F3D00010026142F /* XCRemoteSwiftPackageReference "Sparkle" */;
-			productName = Sparkle;
 		};
 		83B0DAA92F3C24EE0026142F /* TBCCheckout */ = {
 			isa = XCSwiftPackageProductDependency;

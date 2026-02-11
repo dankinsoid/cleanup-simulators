@@ -15,20 +15,9 @@ struct TipJarView: View {
             HStack(spacing: 8) {
                 ForEach(viewModel.tips) { tip in
                     TipButton(tip: tip) {
-                        Task { await viewModel.purchase(tip) }
+                        viewModel.sponsor(tip)
                     }
-                    .disabled(viewModel.isLoading)
                 }
-            }
-
-            if viewModel.isLoading {
-                ProgressView()
-                    .controlSize(.small)
-            } else if let message = viewModel.purchaseMessage {
-                Text(message)
-                    .font(.caption)
-                    .foregroundStyle(.green)
-                    .transition(.opacity)
             }
 
             Spacer()
@@ -43,18 +32,6 @@ struct TipJarView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
-        .animation(.default, value: viewModel.purchaseMessage)
-        .sheet(isPresented: Binding(
-            get: { viewModel.paymentURL != nil },
-            set: { if !$0 { viewModel.onPaymentDismissed() } }
-        )) {
-            if let url = viewModel.paymentURL {
-                PaymentWebView(url: url) {
-                    viewModel.onPaymentReturn()
-                }
-                .frame(minWidth: 480, minHeight: 600)
-            }
-        }
     }
 }
 
