@@ -19,7 +19,7 @@ final class TipJarViewModel {
     ]
 
     func sponsor(_ tip: Tip) {
-        let url = URL(string: "https://github.com/sponsors/dankinsoid/sponsorships?amount=\(tip.amount)&frequency=one_time")!
+        let url = URL(string: "https://github.com/sponsors/dankinsoid/sponsorships?amount=\(tip.amount)&frequency=one-time")!
         NSWorkspace.shared.open(url)
     }
 }
