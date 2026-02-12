@@ -6,6 +6,14 @@
         <description>CleanupSimulators updates</description>
         <language>en</language>
         <item>
+            <title>1.0.3</title>
+            <pubDate>Thu, 12 Feb 2026 07:30:03 +0000</pubDate>
+            <sparkle:version>7</sparkle:version>
+            <sparkle:shortVersionString>1.0.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/dankinsoid/cleanup-simulators/releases/download/v1.0.3/CleanupSimulators.dmg" length="1699382" type="application/octet-stream" sparkle:edSignature="znLBfx8jbBLmrop6BDwaOiqFTwSpCuob97f/rwJkA2ILuZsvXa3eAKKX3Fuv07Lat48drrg512bajoCf3lKgDQ=="/>
+        </item>
+        <item>
             <title>1.0.2</title>
             <pubDate>Wed, 11 Feb 2026 12:56:54 +0000</pubDate>
             <sparkle:version>6</sparkle:version>
@@ -20,14 +28,6 @@
             <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
             <enclosure url="https://github.com/dankinsoid/cleanup-simulators/releases/download/v1.0.1/CleanupSimulators.dmg" length="2319695" type="application/octet-stream" sparkle:edSignature="isiFQwEZe9/4quK2cGKnkMNXgghhtMNknBnz0+icYfRRDUVpya0b13UezsigfLehEgFxYjskMci5evmzjoHfCw=="/>
-        </item>
-        <item>
-            <title>1.0.0</title>
-            <pubDate>Wed, 11 Feb 2026 09:22:41 +0000</pubDate>
-            <sparkle:version>4</sparkle:version>
-            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
-            <sparkle:minimumSystemVersion>14.6</sparkle:minimumSystemVersion>
-            <enclosure url="https://github.com/dankinsoid/cleanup-simulators/releases/download/v1.0.0/CleanupSimulators.dmg" length="2322428" type="application/octet-stream" sparkle:edSignature="V6qFwbSPxEy5Q7SJioe5oAf4pxjAdof6ewtDcT3w48OQu4Tk249UYsbB5cHU4dvcCWVd1yTsl5P+vzerZtXYCQ=="/>
         </item>
     </channel>
 </rss>
