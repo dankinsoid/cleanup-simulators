@@ -14,7 +14,7 @@ struct SimctlDevice: Decodable {
     let deviceTypeIdentifier: String
     let dataPath: String
     let dataPathSize: Int64
-    let logPath: String
+    let logPath: String?
     let logPathSize: Int64?
     let lastBootedAt: String?
 }
