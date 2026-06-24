@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:cleanup-simulators}",
+      "name": "Debug simclean",
+      "target": "simclean",
+      "configuration": "debug",
+      "preLaunchTask": "swift: Build Debug simclean"
+    },
+    {
+      "type": "swift",
+      "request": "launch",
+      "args": [],
+      "cwd": "${workspaceFolder:cleanup-simulators}",
+      "name": "Release simclean",
+      "target": "simclean",
+      "configuration": "release",
+      "preLaunchTask": "swift: Build Release simclean"
+    }
+  ]
+}

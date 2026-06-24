@@ -54,6 +54,31 @@ public final class SimulatorManager: Sendable {
         }
     }
 
+    /// List installed runtime *images* — the on-disk iOS versions that pile up after
+    /// Xcode updates. Sizes come straight from simctl, so this needs no disk scan and
+    /// avoids the mounted-image double-counting under `/Library/Developer/CoreSimulator/Volumes`.
+    public func listRuntimeImages() async throws -> [RuntimeImage] {
+        let json = try await Shell.run(xcrunPath, arguments: ["simctl", "runtime", "list", "-j"])
+        let decoder = JSONDecoder()
+        let map = try decoder.decode([String: SimctlRuntimeImage].self, from: Data(json.utf8))
+        return map.values.map { img in
+            let platform = Self.platformName(img.platformIdentifier)
+            let version = img.version ?? ""
+            return RuntimeImage(
+                id: img.identifier,
+                name: version.isEmpty ? platform : "\(platform) \(version)",
+                version: version,
+                build: img.build ?? "",
+                sizeBytes: img.sizeBytes ?? 0,
+                kind: img.kind ?? "",
+                isDeletable: img.deletable ?? true,
+                lastUsedAt: Formatters.parseISO8601(img.lastUsedAt),
+                state: img.state ?? ""
+            )
+        }
+        .sorted { ($0.name, $0.build) < ($1.name, $1.build) }
+    }
+
     // MARK: - Lifecycle
 
     public func boot(_ simulator: Simulator) async throws {
@@ -94,6 +119,12 @@ public final class SimulatorManager: Sendable {
         try await Shell.exec(xcrunPath, arguments: ["simctl", "delete", "unavailable"])
     }
 
+    /// Delete an installed runtime image by its `simctl runtime` UUID. Fails loudly if a
+    /// simulator on that runtime is currently booted (the image stays mounted).
+    public func deleteRuntimeImage(_ id: String) async throws {
+        try await Shell.exec(xcrunPath, arguments: ["simctl", "runtime", "delete", id])
+    }
+
     // MARK: - Xcode
 
     public func isXcodeRunning() -> Bool {
@@ -126,6 +157,16 @@ public final class SimulatorManager: Sendable {
     }
 
     // MARK: - Private
+
+    /// Map a simctl platform identifier to a display platform name.
+    private static func platformName(_ platformIdentifier: String?) -> String {
+        guard let p = platformIdentifier?.lowercased() else { return "iOS" }
+        if p.contains("iphone") { return "iOS" }
+        if p.contains("appletv") || p.contains("tvos") { return "tvOS" }
+        if p.contains("watch") { return "watchOS" }
+        if p.contains("xr") || p.contains("vision") { return "visionOS" }
+        return "iOS"
+    }
 
     private func friendlyRuntimeName(_ identifier: String) -> String {
         // com.apple.CoreSimulator.SimRuntime.iOS-18-6 → iOS 18.6

@@ -7,6 +7,7 @@ final class SimulatorListViewModel {
 
     var simulators: [Simulator] = []
     var storageCategories: [StorageCategory] = []
+    var runtimeImages: [RuntimeImage] = []
     var isLoading = false
     var errorMessage: String?
     var selectedIDs: Set<String> = []
@@ -27,8 +28,9 @@ final class SimulatorListViewModel {
 
     var listItems: [ListItem] {
         let sims: [ListItem] = simulators.map { .simulator($0) }
+        let rts: [ListItem] = runtimeImages.map { .runtime($0) }
         let cats: [ListItem] = storageCategories.map { .storage($0) }
-        let all = sims + cats
+        let all = sims + rts + cats
         let isSortedByName = sortOrder.first?.keyPath == \ListItem.name
         if isSortedByName {
             let order = sortOrder.first?.order ?? .forward
@@ -48,6 +50,10 @@ final class SimulatorListViewModel {
 
     var selectedCategories: [StorageCategory] {
         selectedItems.compactMap(\.storageCategory)
+    }
+
+    var selectedRuntimeImages: [RuntimeImage] {
+        selectedItems.compactMap(\.runtimeImage)
     }
 
     var subtitle: String {
@@ -72,6 +78,9 @@ final class SimulatorListViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
+        // Runtime images carry their own size from simctl — load is instant, no disk scan.
+        // Treated as non-fatal: a failure here must not mask a simulator-load error.
+        runtimeImages = (try? await simulatorManager.listRuntimeImages()) ?? []
         isLoading = false
 
         // Show existing categories immediately with loading state
@@ -141,7 +150,8 @@ final class SimulatorListViewModel {
     func deleteSelected(closeXcode: Bool = false) async {
         let sims = selectedSimulators
         let cats = selectedCategories
-        let count = sims.count + cats.count
+        let runtimes = selectedRuntimeImages
+        let count = sims.count + cats.count + runtimes.count
         await perform("Deleting \(count) item(s)...") {
             if closeXcode {
                 try await self.simulatorManager.closeXcode()
@@ -152,6 +162,9 @@ final class SimulatorListViewModel {
             }
             for cat in cats {
                 try self.storageManager.deleteCategory(cat)
+            }
+            for runtime in runtimes {
+                try await self.simulatorManager.deleteRuntimeImage(runtime.id)
             }
         }
         selectedIDs.removeAll()

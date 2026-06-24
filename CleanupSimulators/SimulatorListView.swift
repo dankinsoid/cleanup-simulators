@@ -31,6 +31,12 @@ struct SimulatorListView: View {
                                     .frame(width: 14, alignment: .center)
                                 Text(cat.name)
                                     .foregroundStyle(.secondary)
+                            case .runtime(let img):
+                                Image(systemName: "shippingbox.fill")
+                                    .foregroundStyle(.purple)
+                                    .frame(width: 14, alignment: .center)
+                                Text(img.build.isEmpty ? img.name : "\(img.name) (\(img.build))")
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -89,7 +95,7 @@ struct SimulatorListView: View {
                                     .monospacedDigit()
                             }
                             Spacer()
-                            if item.diskSize > 0 {
+                            if item.diskSize > 0 && item.isDeletable {
                                 Button {
                                     viewModel.selectedIDs = [item.id]
                                     viewModel.confirmDeleteSelected()
@@ -107,6 +113,9 @@ struct SimulatorListView: View {
                     TableColumn("Last Booted", value: \.lastBootedAt) { item in
                         if let sim = item.simulator {
                             Text(Formatters.relativeDate(sim.lastBootedAt))
+                                .foregroundStyle(.secondary)
+                        } else if let img = item.runtimeImage {
+                            Text(Formatters.relativeDate(img.lastUsedAt))
                                 .foregroundStyle(.secondary)
                         }
                     }
