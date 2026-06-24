@@ -50,7 +50,10 @@ struct SimulatorListView: View {
                     .width(min: 80, ideal: 100)
 
                     TableColumn("State", value: \.stateRank) { item in
-                        if let sim = item.simulator {
+                        if let img = item.runtimeImage, !img.state.isEmpty, img.state != "Ready" {
+                            Text(img.state)
+                                .foregroundStyle(.orange)
+                        } else if let sim = item.simulator {
                             HStack(spacing: 6) {
                                 Text(sim.state == .booted ? "Booted" : "Shutdown")
                                     .foregroundStyle(sim.state == .booted ? .green : .secondary)

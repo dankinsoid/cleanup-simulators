@@ -61,22 +61,29 @@ public final class SimulatorManager: Sendable {
         let json = try await Shell.run(xcrunPath, arguments: ["simctl", "runtime", "list", "-j"])
         let decoder = JSONDecoder()
         let map = try decoder.decode([String: SimctlRuntimeImage].self, from: Data(json.utf8))
-        return map.values.map { img in
-            let platform = Self.platformName(img.platformIdentifier)
-            let version = img.version ?? ""
-            return RuntimeImage(
-                id: img.identifier,
-                name: version.isEmpty ? platform : "\(platform) \(version)",
-                version: version,
-                build: img.build ?? "",
-                sizeBytes: img.sizeBytes ?? 0,
-                kind: img.kind ?? "",
-                isDeletable: img.deletable ?? true,
-                lastUsedAt: Formatters.parseISO8601(img.lastUsedAt),
-                state: img.state ?? ""
-            )
-        }
-        .sorted { ($0.name, $0.build) < ($1.name, $1.build) }
+        return map.values
+            // Drop images already on their way out: their disk space is being reclaimed,
+            // and CoreSimulator can leave the entry wedged in "Deleting" (only a reboot
+            // clears it) — re-deleting just errors. Hiding it matches what the user did.
+            .filter { ($0.state ?? "") != "Deleting" }
+            .map { img in
+                let platform = Self.platformName(img.platformIdentifier)
+                let version = img.version ?? ""
+                let state = img.state ?? ""
+                return RuntimeImage(
+                    id: img.identifier,
+                    name: version.isEmpty ? platform : "\(platform) \(version)",
+                    version: version,
+                    build: img.build ?? "",
+                    sizeBytes: img.sizeBytes ?? 0,
+                    kind: img.kind ?? "",
+                    // Only a Ready image can be safely deleted; Preparing/Installing are transient.
+                    isDeletable: (img.deletable ?? true) && (state.isEmpty || state == "Ready"),
+                    lastUsedAt: Formatters.parseISO8601(img.lastUsedAt),
+                    state: state
+                )
+            }
+            .sorted { ($0.name, $0.build) < ($1.name, $1.build) }
     }
 
     // MARK: - Lifecycle
