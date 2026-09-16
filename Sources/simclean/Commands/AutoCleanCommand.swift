@@ -29,12 +29,13 @@ struct AutoCleanCommand: AsyncParsableCommand {
             print("\nCalculating current storage usage...")
             let categories = await storageManager.calculateAll()
             for cat in categories {
-                print("  \(cat.name): \(Formatters.byteCount(cat.diskSize))")
+                let suffix = cat.isDeletable ? "" : "  (kept)"
+                print("  \(cat.name): \(Formatters.byteCount(cat.diskSize))\(suffix)")
                 if !cat.consequence.isEmpty {
                     print("    ⚠ \(cat.consequence)")
                 }
             }
-            let total = categories.reduce(Int64(0)) { $0 + $1.diskSize }
+            let total = categories.filter(\.isDeletable).reduce(Int64(0)) { $0 + $1.diskSize }
             print("  Total: ~\(Formatters.byteCount(total))")
 
             var closeXcode = false

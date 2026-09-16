@@ -23,11 +23,24 @@ public final class StorageManager: Sendable {
          "All projects will require a full rebuild")
     ]
 
-    public init() {}
+    /// Mount point of the runtime images; shown as the category path.
+    ///
+    /// Sizes are never measured by walking this directory: each `iOS_*` entry is a
+    /// read-only APFS volume whose apparent contents are the decompressed image, several
+    /// times the bytes the backing file actually occupies. simctl reports the backing size.
+    public static let runtimeVolumesPath = "/Library/Developer/CoreSimulator/Volumes"
+
+    private let simulatorManager: SimulatorManager
+
+    public init(simulatorManager: SimulatorManager = SimulatorManager()) {
+        self.simulatorManager = simulatorManager
+    }
 
     /// Calculate disk usage for all storage categories concurrently.
     public func calculateAll() async -> [StorageCategory] {
-        await withTaskGroup(of: StorageCategory?.self) { group in
+        async let runtimeImages = runtimeImagesCategory()
+
+        let scanned = await withTaskGroup(of: StorageCategory?.self) { group in
             for cat in Self.categories {
                 group.addTask {
                     let expandedPath = NSString(string: cat.path).expandingTildeInPath
@@ -50,6 +63,30 @@ public final class StorageManager: Sendable {
                 (order.firstIndex(of: a.id) ?? 0) < (order.firstIndex(of: b.id) ?? 0)
             }
         }
+
+        guard let images = await runtimeImages else { return scanned }
+        return scanned + [images]
+    }
+
+    /// Installed runtime images as a single reportable category.
+    ///
+    /// Returns nil when no images are installed or simctl is unavailable, so the category
+    /// is omitted rather than reported as an empty 0-byte row.
+    private func runtimeImagesCategory() async -> StorageCategory? {
+        guard let images = try? await simulatorManager.listRuntimeImages(), !images.isEmpty else {
+            return nil
+        }
+        let total = images.reduce(Int64(0)) { $0 + $1.sizeBytes }
+        return StorageCategory(
+            id: StorageCategory.runtimeImagesID,
+            name: "Simulator Runtimes",
+            path: Self.runtimeVolumesPath,
+            diskSize: total,
+            // Mounted system volumes; removing files here corrupts CoreSimulator.
+            // Reclaimed only via `xcrun simctl runtime delete <id>`.
+            isDeletable: false,
+            consequence: "Delete individually with: xcrun simctl runtime delete <id>"
+        )
     }
 
     /// Calculate directory size using FileManager.
@@ -77,6 +114,9 @@ public final class StorageManager: Sendable {
 
     /// Delete a storage category directory.
     public func deleteCategory(_ category: StorageCategory) throws {
+        guard category.isDeletable else {
+            throw SimCleanError.categoryNotDeletable(name: category.name)
+        }
         let fm = FileManager.default
         guard fm.fileExists(atPath: category.path) else {
             throw SimCleanError.directoryNotFound(path: category.path)
@@ -98,9 +138,11 @@ public final class StorageManager: Sendable {
         // Delete unavailable simulators
         try await simulatorManager.deleteUnavailable()
 
-        // Calculate sizes before deletion
+        // Calculate sizes before deletion; only the path-scanned categories get removed.
         let categories = await calculateAll()
-        let totalBefore = categories.reduce(Int64(0)) { $0 + $1.diskSize }
+        let totalBefore = categories
+            .filter(\.isDeletable)
+            .reduce(Int64(0)) { $0 + $1.diskSize }
 
         // Delete category directories
         let fm = FileManager.default

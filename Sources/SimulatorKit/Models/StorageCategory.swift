@@ -9,6 +9,9 @@ public struct StorageCategory: Identifiable, Sendable {
     public let consequence: String
     public let isCalculating: Bool
 
+    /// Identifier of the category covering installed runtime images.
+    public static let runtimeImagesID = "runtime_images"
+
     public init(id: String, name: String, path: String, diskSize: Int64, isDeletable: Bool = true, consequence: String = "", isCalculating: Bool = false) {
         self.id = id
         self.name = name

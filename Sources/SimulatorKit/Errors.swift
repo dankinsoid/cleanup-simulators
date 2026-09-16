@@ -6,6 +6,7 @@ public enum SimCleanError: LocalizedError {
     case ambiguousSimulatorName(name: String, matches: [Simulator])
     case xcodeStillRunning
     case directoryNotFound(path: String)
+    case categoryNotDeletable(name: String)
 
     public var errorDescription: String? {
         switch self {
@@ -20,6 +21,8 @@ public enum SimCleanError: LocalizedError {
             return "Xcode is still running. Close it before proceeding."
         case .directoryNotFound(let path):
             return "Directory not found: \(path)"
+        case .categoryNotDeletable(let name):
+            return "'\(name)' cannot be removed by deleting files."
         }
     }
 }

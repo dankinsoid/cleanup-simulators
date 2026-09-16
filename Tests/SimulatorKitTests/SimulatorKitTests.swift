@@ -23,3 +23,28 @@ import Testing
     #expect(SimulatorState(rawValue: "Shutdown") == .shutdown)
     #expect(SimulatorState(rawValue: "SomethingElse") == .unknown)
 }
+
+@Test func runtimeImagesCategoryIsNotFileDeletable() async {
+    let categories = await StorageManager().calculateAll()
+    guard let runtimes = categories.first(where: { $0.id == StorageCategory.runtimeImagesID }) else { return }
+    #expect(runtimes.isDeletable == false)
+    #expect(runtimes.path == StorageManager.runtimeVolumesPath)
+}
+
+@Test func deleteCategoryRejectsNonDeletable() {
+    let category = StorageCategory(
+        id: StorageCategory.runtimeImagesID,
+        name: "Simulator Runtimes",
+        path: StorageManager.runtimeVolumesPath,
+        diskSize: 1,
+        isDeletable: false
+    )
+    #expect(throws: SimCleanError.self) {
+        try StorageManager().deleteCategory(category)
+    }
+}
+
+@Test func autoCleanPathsExcludeRuntimeVolumes() {
+    let paths = StorageManager.categories.map(\.path)
+    #expect(!paths.contains { $0.hasPrefix(StorageManager.runtimeVolumesPath) })
+}
